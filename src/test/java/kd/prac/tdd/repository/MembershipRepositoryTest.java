@@ -6,9 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Commit;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +38,7 @@ class MembershipRepositoryTest {
         // given
         final Membership membership = Membership.builder()
                 .userId("user")
-                .membershipName(MembershipType.NAVER)
+                .membershipType(MembershipType.NAVER)
                 .point(10000)
                 .build();
 
@@ -51,7 +48,7 @@ class MembershipRepositoryTest {
         // then
         assertThat(savedResult.getId()).isNotNull();
         assertThat(savedResult.getUserId()).isEqualTo("user");
-        assertThat(savedResult.getMembershipName()).isEqualTo(MembershipType.NAVER);
+        assertThat(savedResult.getMembershipType()).isEqualTo(MembershipType.NAVER);
         assertThat(savedResult.getPoint()).isEqualTo(10000);
 
         /*
@@ -72,7 +69,7 @@ class MembershipRepositoryTest {
         // given
         final Membership membership = Membership.builder()
                 .userId("user")
-                .membershipName(MembershipType.NAVER)
+                .membershipType(MembershipType.NAVER)
                 .point(10000)
                 .build();
 
@@ -84,7 +81,7 @@ class MembershipRepositoryTest {
         assertThat(findMembership).isNotNull();
         assertThat(findMembership.getId()).isNotNull();
         assertThat(findMembership.getUserId()).isEqualTo(membership.getUserId());
-        assertThat(findMembership.getMembershipName()).isEqualTo(membership.getMembershipName());
+        assertThat(findMembership.getMembershipType()).isEqualTo(membership.getMembershipType());
         assertThat(findMembership.getPoint()).isEqualTo(membership.getPoint());
 
         /*
@@ -95,8 +92,5 @@ class MembershipRepositoryTest {
          */
 
     }
-
-
-
 
 }

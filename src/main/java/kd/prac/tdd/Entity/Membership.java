@@ -21,7 +21,7 @@ public class Membership {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private MembershipType membershipName;
+    private MembershipType membershipType;
 
     @Column(nullable = false)
     private String userId;
@@ -38,8 +38,9 @@ public class Membership {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Membership(MembershipType membershipName, String userId, Integer point) {
-        this.membershipName = membershipName;
+    public Membership(Long id, MembershipType membershipType, String userId, Integer point) {
+        this.id = id;
+        this.membershipType = membershipType;
         this.userId = userId;
         this.point = point;
     }
