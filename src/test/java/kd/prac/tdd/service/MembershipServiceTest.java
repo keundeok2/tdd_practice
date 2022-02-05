@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +42,9 @@ class MembershipServiceTest {
 
 
         // when
-        MembershipException result = org.junit.jupiter.api.Assertions.assertThrows(MembershipException.class, () -> membershipService.addMembership(userId, type, point));
+        MembershipException result = assertThrows(
+                MembershipException.class,
+                () -> membershipService.addMembership(userId, type, point));
 
         // then
         assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.DUPLICATED_MEMBERSHIP_REGISTER);
