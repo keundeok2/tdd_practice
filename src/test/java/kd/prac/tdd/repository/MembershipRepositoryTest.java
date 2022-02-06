@@ -155,4 +155,23 @@ class MembershipRepositoryTest {
         assertThatThrownBy(() -> findMembership.orElseThrow());
     }
 
+    @Test
+    @DisplayName("포인트 적립")
+    void accumulate_point_failed_by_not_exists_membership() {
+        // given
+        Membership givenMembership = Membership.builder()
+                .userId("123")
+                .membershipType(MembershipType.NAVER)
+                .point(100)
+                .build();
+
+        membershipRepository.save(givenMembership);
+
+        // when
+
+
+        // then
+    }
+
+
 }

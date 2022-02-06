@@ -9,6 +9,7 @@ import kd.prac.tdd.exception.MembershipException;
 import kd.prac.tdd.repository.MembershipRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class MembershipService {
 
     private final MembershipRepository membershipRepository;
+    private final PointService ratedPointService;
 
     public MembershipResponse addMembership(String userId, MembershipType type, int point) {
 
@@ -68,5 +70,19 @@ public class MembershipService {
         }
 
         membershipRepository.deleteById(membership.getId());
+    }
+
+    @Transactional
+    public void accumulatePoint(String userId, Long membershipId, int price) {
+        Membership findMembership = membershipRepository.findById(membershipId)
+                .orElseThrow(() -> new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND));
+
+        if (!findMembership.getUserId().equals(userId)) {
+            throw new MembershipException(MembershipErrorResult.UNKNOWN_USER);
+        }
+
+        int calculate = ratedPointService.calcultate(price);
+        findMembership.addPoint(calculate);
+
     }
 }

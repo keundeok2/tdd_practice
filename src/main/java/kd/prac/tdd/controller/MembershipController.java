@@ -1,21 +1,21 @@
 package kd.prac.tdd.controller;
 
-import kd.prac.tdd.dto.MembershipDetail;
-import kd.prac.tdd.dto.MembershipErrorResult;
-import kd.prac.tdd.dto.MembershipRequest;
-import kd.prac.tdd.dto.MembershipResponse;
+import kd.prac.tdd.dto.*;
 import kd.prac.tdd.enums.MembershipType;
 import kd.prac.tdd.exception.MembershipException;
 import kd.prac.tdd.service.MembershipService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Min;
 import java.lang.reflect.Member;
 import java.util.List;
 
@@ -69,6 +69,18 @@ public class MembershipController {
     ) {
         log.info("removeMembership() userId={}, membershipId={}", userId, membershipId);
         membershipService.removeMembership(membershipId, userId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/api/v1/membership/accumulate")
+    public ResponseEntity accumulatePoint(
+            @RequestHeader(USER_ID_HEADER) String userId,
+            @RequestBody @Validated PointAccRequest request
+    ) {
+        log.info("accPoint() userId={}, membershipId={}, point={}", userId, request.getMembershipId(), request.getPrice());
+
+        membershipService.accumulatePoint(userId, request.getMembershipId(), request.getPrice());
 
         return ResponseEntity.ok().build();
     }

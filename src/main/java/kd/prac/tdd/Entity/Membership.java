@@ -44,4 +44,9 @@ public class Membership {
         this.userId = userId;
         this.point = point;
     }
+
+    public void addPoint(int calculatedPoint) {
+        this.point += calculatedPoint;
+
+    }
 }

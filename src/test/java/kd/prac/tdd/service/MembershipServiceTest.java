@@ -34,6 +34,9 @@ class MembershipServiceTest {
     @Mock
     MembershipRepository membershipRepository;
 
+    @Mock
+    RatedPointService ratedPointService;
+
     String userId = "userId";
     MembershipType type = MembershipType.NAVER;
     int point = 10000;
@@ -175,6 +178,73 @@ class MembershipServiceTest {
         // then
     }
 
+    @Test
+    @DisplayName("멤버십적립_실패_존재하지_않음")
+    void membership_point_fail_test_not_exist() {
+        // given
+        String userId = "user";
+        Long membershipId = 1L;
+        int price = 1000;
+
+        given(membershipRepository.findById(membershipId)).willReturn(Optional.empty());
+
+        // when
+        // then
+        assertThatThrownBy(() -> membershipService.accumulatePoint(userId, membershipId, price))
+                .isInstanceOf(MembershipException.class)
+                .extracting("errorResult")
+                .isEqualTo(MembershipErrorResult.MEMBERSHIP_NOT_FOUND);
+
+    }
+
+    @Test
+    @DisplayName("멤버십적립_실패_유저가_다름")
+    void membership_point_fail_test_user_diff() {
+        // given
+        String userId = "user";
+        Long membershipId = 1L;
+        int price = 1000;
+
+        Membership givenMembership = Membership.builder()
+                .id(membershipId)
+                .userId(userId)
+                .membershipType(MembershipType.NAVER)
+                .point(100)
+                .build();
+
+        given(membershipRepository.findById(membershipId)).willReturn(Optional.of(givenMembership));
+
+        // when
+        // then
+        assertThatThrownBy(() -> membershipService.accumulatePoint("user2", membershipId, price))
+                .isInstanceOf(MembershipException.class)
+                .extracting("errorResult")
+                .isEqualTo(MembershipErrorResult.UNKNOWN_USER);
+
+    }
+
+
+    @Test
+    @DisplayName("포인트_적립_성공")
+    void membership_point_success_test() {
+        // given
+        String userId = "user";
+        Long membershipId = 1L;
+        int price = 1000;
+
+        Membership givenMembership = Membership.builder()
+                .id(membershipId)
+                .userId(userId)
+                .membershipType(MembershipType.NAVER)
+                .point(100)
+                .build();
+
+        given(membershipRepository.findById(membershipId)).willReturn(Optional.of(givenMembership));
+        // when
+
+        membershipService.accumulatePoint(userId, membershipId, price);
+        // then
+    }
 
     private Membership membership() {
         return Membership.builder()

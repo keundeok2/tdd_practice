@@ -2,10 +2,7 @@ package kd.prac.tdd.controller;
 
 import com.google.gson.Gson;
 import kd.prac.tdd.Entity.Membership;
-import kd.prac.tdd.dto.MembershipDetail;
-import kd.prac.tdd.dto.MembershipErrorResult;
-import kd.prac.tdd.dto.MembershipRequest;
-import kd.prac.tdd.dto.MembershipResponse;
+import kd.prac.tdd.dto.*;
 import kd.prac.tdd.enums.MembershipType;
 import kd.prac.tdd.exception.MembershipException;
 import kd.prac.tdd.repository.MembershipRepository;
@@ -15,19 +12,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -327,6 +319,57 @@ class MembershipControllerTest {
 
     }
 
+    @Test
+    @DisplayName("포인트_적립_실패_음수")
+    void point_acc_faied_by_negative() throws Exception {
+        // given
+        final String url = "/api/v1/membership/accumulate";
+        final Long membershipId = 1L;
+        final Integer price = -1;
+        PointAccRequest givenRequest = PointAccRequest.builder()
+                .membershipId(membershipId)
+                .price(price)
+                .build();
 
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post(url, membershipId, price)
+                        .header(USER_ID_HEADER, userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(givenRequest))
+        ).andDo(print());
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    @DisplayName("포인트_적립_성공")
+    void point_acc_success_test() throws Exception {
+        // given
+        final String url = "/api/v1/membership/accumulate";
+        final Long membershipId = 1L;
+        final Integer price = 1000;
+        PointAccRequest givenRequest = PointAccRequest.builder()
+                .membershipId(membershipId)
+                .price(price)
+                .build();
+
+//        given(membershipService.accumulatePoint(userId, membershipId, price))
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post(url)
+                        .header(USER_ID_HEADER, userId)
+                        .content(gson.toJson(givenRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk());
+
+
+    }
 
 }

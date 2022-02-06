@@ -13,4 +13,5 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
 
     List<Membership> findByUserId(String userId);
 
+
 }
