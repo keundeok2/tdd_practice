@@ -1,11 +1,14 @@
 package kd.prac.tdd.repository;
 
 import kd.prac.tdd.Entity.Membership;
+import kd.prac.tdd.dto.MembershipDetail;
 import kd.prac.tdd.enums.MembershipType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MembershipRepositoryTest {
 
 
-    @Autowired MembershipRepository membershipRepository;
+    @Autowired
+    MembershipRepository membershipRepository;
 
     @Test
     @DisplayName("MembershipRespository가 null이 아님을 확인")
@@ -75,7 +79,7 @@ class MembershipRepositoryTest {
 
         // when
         membershipRepository.save(membership);
-        final Membership findMembership = membershipRepository.findByUserIdAndMembershipName("user", MembershipType.NAVER).orElseThrow();
+        final Membership findMembership = membershipRepository.findByUserIdAndMembershipType("user", MembershipType.NAVER).orElseThrow();
 
         // then
         assertThat(findMembership).isNotNull();
@@ -91,6 +95,42 @@ class MembershipRepositoryTest {
             3. 테스트
          */
 
+    }
+
+    @Test
+    @DisplayName("멤버십 리스트가 0")
+    void membership_list_size_0() {
+        // given
+        String userId = "123";
+        // when
+        List<Membership> results = membershipRepository.findByUserId(userId);
+        // then
+        assertThat(results.size()).isEqualTo(0);
+    }
+
+
+    @Test
+    @DisplayName("멤버십 리스트가 2")
+    void membership_list_size_2() {
+        // given
+        String userId = "123";
+        Membership membership1 = Membership.builder()
+                .userId(userId)
+                .membershipType(MembershipType.NAVER)
+                .point(1000)
+                .build();
+        Membership membership2 = Membership.builder()
+                .userId(userId)
+                .membershipType(MembershipType.LINE)
+                .point(1000)
+                .build();
+        membershipRepository.save(membership1);
+        membershipRepository.save(membership2);
+        // when
+        List<Membership> results = membershipRepository.findByUserId(userId);
+
+        // then
+        assertThat(results.size()).isEqualTo(2);
     }
 
 }

@@ -1,23 +1,28 @@
 package kd.prac.tdd.service;
 
 import kd.prac.tdd.Entity.Membership;
+import kd.prac.tdd.dto.MembershipDetail;
 import kd.prac.tdd.dto.MembershipErrorResult;
 import kd.prac.tdd.dto.MembershipResponse;
 import kd.prac.tdd.enums.MembershipType;
 import kd.prac.tdd.exception.MembershipException;
 import kd.prac.tdd.repository.MembershipRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +43,7 @@ class MembershipServiceTest {
     void create_membership_result_fail_already_exists() {
         // given
 //        when(membershipRepository.findByUserIdAndMembershipName(userId, type)).thenReturn(Optional.of(Membership.builder().build()));
-        doReturn(Optional.of(Membership.builder().build())).when(membershipRepository).findByUserIdAndMembershipName(userId, type);
+        doReturn(Optional.of(Membership.builder().build())).when(membershipRepository).findByUserIdAndMembershipType(userId, type);
 
 
         // when
@@ -57,7 +62,7 @@ class MembershipServiceTest {
 //        when(membershipRepository.findByUserIdAndMembershipName(userId, type)).thenReturn(Optional.empty());
 //        when(membershipRepository.save(BDDMockito.any(Membership.class))).thenReturn(membership());
 
-        doReturn(Optional.empty()).when(membershipRepository).findByUserIdAndMembershipName(userId, type);
+        doReturn(Optional.empty()).when(membershipRepository).findByUserIdAndMembershipType(userId, type);
         doReturn(membership()).when(membershipRepository).save(any(Membership.class));
 
         // when
@@ -72,10 +77,59 @@ class MembershipServiceTest {
         /*
             stub된 레퍼지터리의 메서드가 몇 번 호출되었는지 검증
          */
-        verify(membershipRepository, times(1)).findByUserIdAndMembershipName(userId, type);
+        verify(membershipRepository, times(1)).findByUserIdAndMembershipType(userId, type);
         verify(membershipRepository, times(1)).save(any(Membership.class));
 
     }
+
+    @Test
+    @DisplayName("멤버십 리스트 조회 테스트")
+    void membership_not_found_fail_test() {
+        // given
+        given(membershipRepository.findByUserId(userId))
+                .willReturn(Arrays.asList(membership(), membership()));
+        // when
+        List<MembershipDetail> membershipList = membershipService.getMembershipList(userId);
+
+        // then
+        assertThat(membershipList).isNotNull();
+        assertThat(membershipList.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("멤버십 상세조회 실패 테스트_멤버십 존재하지 않음")
+    void membership_detail_failed_test() {
+        // given
+        given(membershipRepository.findByUserIdAndMembershipType(userId, type))
+                .willReturn(Optional.empty());
+
+        // when
+        // then
+        assertThatThrownBy(() -> membershipService.getMembership(userId, type))
+                .isInstanceOf(MembershipException.class)
+                .extracting("errorResult")
+                .isEqualTo(MembershipErrorResult.MEMBERSHIP_NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("멤버십 상세조회 성공 테스트")
+    void membership_detail_success_test() {
+        // given
+        Membership givenMembership = Membership.builder().build();
+
+        given(membershipRepository.findByUserIdAndMembershipType(userId, type))
+                .willReturn(Optional.ofNullable(givenMembership));
+
+        // when
+        MembershipDetail detail = membershipService.getMembership(userId, type);
+
+        // then
+        assertThat(detail).isNotNull();
+
+    }
+
+
+
 
     private Membership membership() {
         return Membership.builder()
