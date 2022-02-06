@@ -2,15 +2,19 @@ package kd.prac.tdd.repository;
 
 import kd.prac.tdd.Entity.Membership;
 import kd.prac.tdd.dto.MembershipDetail;
+import kd.prac.tdd.dto.MembershipErrorResult;
 import kd.prac.tdd.enums.MembershipType;
+import kd.prac.tdd.exception.MembershipException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 class MembershipRepositoryTest {
@@ -131,6 +135,24 @@ class MembershipRepositoryTest {
 
         // then
         assertThat(results.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("멤버십 추가 후 삭제 테스트")
+    void register_membership_and_delete_test() {
+        // given
+        Membership givenMembership = Membership.builder()
+                .userId("123")
+                .membershipType(MembershipType.NAVER)
+                .point(1000)
+                .build();
+        Membership savedMembership = membershipRepository.save(givenMembership);
+
+        // when
+        membershipRepository.deleteById(savedMembership.getId());
+        Optional<Membership> findMembership = membershipRepository.findById(savedMembership.getId());
+        // then
+        assertThatThrownBy(() -> findMembership.orElseThrow());
     }
 
 }

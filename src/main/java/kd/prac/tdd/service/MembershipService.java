@@ -59,4 +59,14 @@ public class MembershipService {
                 optMembership.orElseThrow(() -> new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND)));
     }
 
+    public void removeMembership(Long membershipId, String userId) {
+        Membership membership = membershipRepository.findById(membershipId)
+                .orElseThrow(() -> new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND));
+
+        if (!membership.getUserId().equals(userId)) {
+            throw new MembershipException(MembershipErrorResult.UNKNOWN_USER);
+        }
+
+        membershipRepository.deleteById(membership.getId());
+    }
 }

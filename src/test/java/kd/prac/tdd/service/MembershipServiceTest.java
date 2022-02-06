@@ -128,7 +128,52 @@ class MembershipServiceTest {
 
     }
 
+    @Test
+    @DisplayName("멤버십 삭제 실패 테스트_멤버십 존재하지 않음")
+    void membership_remove_fail_test() {
+        // given
+        final Long membershipId = 1L;
+        given(membershipRepository.findById(membershipId)).willReturn(Optional.empty());
+        // when
+        // then
+        assertThatThrownBy(() -> membershipService.removeMembership(membershipId, userId))
+                .isInstanceOf(MembershipException.class);
+    }
 
+    @Test
+    @DisplayName("멤버십 삭제 실패 테스트_유저가 일치하지 않음")
+    void membership_remove_fail_unknown_user_test() {
+        // given
+        final Long membershipId = 1L;
+        final Membership givenMembership = Membership.builder()
+                .userId("user22")
+                .build();
+
+        given(membershipRepository.findById(membershipId)).willReturn(Optional.of(givenMembership));
+        // when
+        // then
+        assertThatThrownBy(() -> membershipService.removeMembership(membershipId, userId))
+                .isInstanceOf(MembershipException.class)
+                .extracting("errorResult")
+                .isEqualTo(MembershipErrorResult.UNKNOWN_USER);
+    }
+
+    @Test
+    @DisplayName("멤버십 삭제 성공 테스트")
+    void membership_remove_success_test() {
+        // given
+        final Long membershipId = 1L;
+        final Membership givenMembership = Membership.builder()
+                .userId(userId)
+                .build();
+
+        given(membershipRepository.findById(membershipId)).willReturn(Optional.of(givenMembership));
+
+        // when
+        membershipService.removeMembership(membershipId, userId);
+
+        // then
+    }
 
 
     private Membership membership() {

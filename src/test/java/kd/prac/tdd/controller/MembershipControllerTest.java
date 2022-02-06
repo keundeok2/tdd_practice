@@ -35,8 +35,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -296,6 +295,38 @@ class MembershipControllerTest {
         resultActions.andExpect(status().isOk());
 
     }
+
+
+    @Test
+    @DisplayName("멤버십 삭제 실패 테스트 _ 헤더 없음")
+    void membership_remove_fail_test_unknown_user() throws Exception {
+        // given
+        final String url = "/api/v1/membership/{membershipId}";
+        final Long membershipId = 1L;
+        // when
+
+        ResultActions resultActions = mockMvc.perform(delete(url, membershipId));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("멤버십 삭제 성공")
+    void remove_membership_success_test() throws Exception {
+        // given
+        final String url = "/api/v1/membership/{membershipId}";
+        final Long membershipId = 1L;
+
+        // when
+        ResultActions resultActions = mockMvc.perform(delete(url, membershipId)
+                .header(USER_ID_HEADER, userId));
+
+        // then
+        resultActions.andExpect(status().isOk());
+
+    }
+
 
 
 }

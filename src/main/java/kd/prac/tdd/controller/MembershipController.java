@@ -51,6 +51,7 @@ public class MembershipController {
 
         return ResponseEntity.ok(membershipService.getMembershipList(userId));
     }
+
     @GetMapping("/api/v1/membership")
     public ResponseEntity<MembershipDetail> getMembership(
             @RequestHeader(USER_ID_HEADER) String userId,
@@ -61,7 +62,15 @@ public class MembershipController {
         return ResponseEntity.ok(membershipService.getMembership(userId, type));
     }
 
+    @DeleteMapping("/api/v1/membership/{membershipId}")
+    public ResponseEntity removeMembership(
+            @RequestHeader(USER_ID_HEADER) String userId,
+            @PathVariable("membershipId") Long membershipId
+    ) {
+        log.info("removeMembership() userId={}, membershipId={}", userId, membershipId);
+        membershipService.removeMembership(membershipId, userId);
 
-
+        return ResponseEntity.ok().build();
+    }
 
 }
