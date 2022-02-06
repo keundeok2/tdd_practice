@@ -1,10 +1,7 @@
 package kd.prac.tdd.repository;
 
 import kd.prac.tdd.Entity.Membership;
-import kd.prac.tdd.dto.MembershipDetail;
-import kd.prac.tdd.dto.MembershipErrorResult;
 import kd.prac.tdd.enums.MembershipType;
-import kd.prac.tdd.exception.MembershipException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

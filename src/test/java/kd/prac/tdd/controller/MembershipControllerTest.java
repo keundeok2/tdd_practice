@@ -1,13 +1,11 @@
 package kd.prac.tdd.controller;
 
 import com.google.gson.Gson;
-import kd.prac.tdd.Entity.Membership;
 import kd.prac.tdd.dto.*;
+import kd.prac.tdd.enums.MembershipErrorResult;
 import kd.prac.tdd.enums.MembershipType;
 import kd.prac.tdd.exception.MembershipException;
-import kd.prac.tdd.repository.MembershipRepository;
 import kd.prac.tdd.service.MembershipService;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

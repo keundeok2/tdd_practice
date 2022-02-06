@@ -2,7 +2,7 @@ package kd.prac.tdd.service;
 
 import kd.prac.tdd.Entity.Membership;
 import kd.prac.tdd.dto.MembershipDetail;
-import kd.prac.tdd.dto.MembershipErrorResult;
+import kd.prac.tdd.enums.MembershipErrorResult;
 import kd.prac.tdd.dto.MembershipResponse;
 import kd.prac.tdd.enums.MembershipType;
 import kd.prac.tdd.exception.MembershipException;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

@@ -2,7 +2,7 @@ package kd.prac.tdd.service;
 
 import kd.prac.tdd.Entity.Membership;
 import kd.prac.tdd.dto.MembershipDetail;
-import kd.prac.tdd.dto.MembershipErrorResult;
+import kd.prac.tdd.enums.MembershipErrorResult;
 import kd.prac.tdd.dto.MembershipResponse;
 import kd.prac.tdd.enums.MembershipType;
 import kd.prac.tdd.exception.MembershipException;

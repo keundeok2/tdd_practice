@@ -30,7 +30,8 @@ public class MembershipController {
 
     @ExceptionHandler(MembershipException.class)
     public ResponseEntity handleMembershipException(MembershipException ex) {
-        return ResponseEntity.status(ex.getErrorResult().getHttpStatus()).build();
+        ErrorResponse response = new ErrorResponse(ex.getErrorResult());
+        return ResponseEntity.status(ex.getErrorResult().getHttpStatus()).body(response);
     }
 
 

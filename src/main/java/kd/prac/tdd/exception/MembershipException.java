@@ -1,6 +1,6 @@
 package kd.prac.tdd.exception;
 
-import kd.prac.tdd.dto.MembershipErrorResult;
+import kd.prac.tdd.enums.MembershipErrorResult;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
